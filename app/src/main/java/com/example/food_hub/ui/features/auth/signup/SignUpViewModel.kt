@@ -2,9 +2,10 @@ package com.example.food_hub.ui.features.auth.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.food_hub.data.FoodApi
+import com.example.food_hub.data.models.SignUpRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -13,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(val foodApi: FoodApi): ViewModel() {
+class SignUpViewModel @Inject constructor(private val foodApi: FoodApi) : ViewModel() {
     private val _uiState = MutableStateFlow<SignUpEvent>(SignUpEvent.Nothing)
     val uiState = _uiState.asStateFlow()
 
@@ -26,8 +27,8 @@ class SignUpViewModel @Inject constructor(val foodApi: FoodApi): ViewModel() {
     private val _password = MutableStateFlow("")
     val password = _password.asStateFlow()
 
-    private val _fullName = MutableStateFlow("")
-    val fullName = _fullName.asStateFlow()
+    private val _name = MutableStateFlow("")
+    val name = _name.asStateFlow()
 
     fun onEmailChange(email: String) {
         _email.value = email
@@ -37,28 +38,57 @@ class SignUpViewModel @Inject constructor(val foodApi: FoodApi): ViewModel() {
         _password.value = password
     }
 
-    fun onFullNameChange(fullName: String) {
-        _fullName.value = fullName
+    fun onNameChange(fullName: String) {
+        _name.value = fullName
     }
 
     fun onSignUpClick() {
         viewModelScope.launch {
             _uiState.value = SignUpEvent.Loading
-            delay(2000)
-            _uiState.value = SignUpEvent.Success
-            _navigationEvent.tryEmit(SignUpNavigationEvent.NavigateToHome)
+            try {
+                val response = foodApi.signUp(
+                    SignUpRequest(
+                        name = _name.value,
+                        email = _email.value,
+                        password = _password.value
+                    )
+                )
+                if (response.token.isNotEmpty()) {
+                    _uiState.value = SignUpEvent.Success
+                    _navigationEvent.emit(SignUpNavigationEvent.NavigateToHome)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.value = SignUpEvent.Error
+            }
         }
     }
 
+    fun onLoginClicked() {
+        viewModelScope.launch {
+            _navigationEvent.emit(SignUpNavigationEvent.NavigateToLogin)
+        }
+    }
+
+    fun getList() {
+        viewModelScope.launch {
+            try {
+                val response = foodApi.getFood()
+                println(response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }}
+
     sealed class SignUpNavigationEvent {
-        object NavigateToLogin: SignUpNavigationEvent()
-        object NavigateToHome: SignUpNavigationEvent()
+        data object NavigateToLogin : SignUpNavigationEvent()
+        data object NavigateToHome : SignUpNavigationEvent()
     }
 
     sealed class SignUpEvent() {
-        object Nothing: SignUpEvent()
-        object Success: SignUpEvent()
-        object Error: SignUpEvent()
-        object Loading: SignUpEvent()
+        data object Nothing : SignUpEvent()
+        data object Success : SignUpEvent()
+        data object Error : SignUpEvent()
+        data object Loading : SignUpEvent()
     }
 }

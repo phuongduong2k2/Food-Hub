@@ -37,34 +37,83 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.food_hub.R
 import com.example.food_hub.ui.theme.Colors
 
+
 @Composable
-fun SocialButton(text: Int, icon: Int, onClick: () -> Unit) {
+fun GroupSocialButtons(
+    color: Color = Color.White,
+) {
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            HorizontalDivider(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp),
+                thickness = 1.dp,
+                color = color
+            )
+            Text(
+                text = stringResource(id = R.string.sign_in_with),
+                color = color,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(8.dp)
+            )
+            HorizontalDivider(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp),
+                thickness = 1.dp,
+                color = color
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            SocialButton(
+                icon = R.drawable.ic_facebook,
+                title = R.string.facebook,
+                onClick = {   }
+            )
+            SocialButton(
+                icon = R.drawable.ic_google,
+                title = R.string.google,
+                onClick = {   }
+            )
+        }
+
+    }
+}
+
+
+@Composable
+fun SocialButton(
+    icon: Int, title: Int, onClick: () -> Unit
+) {
     Button(
-        onClick,
-        modifier = Modifier
-            .shadow(shape = RoundedCornerShape(30.dp), elevation = 2.dp)
-            .height(57.dp),
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+        modifier = Modifier.shadow(shape = RoundedCornerShape(32.dp), elevation = 3.dp)
     ) {
         Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.height(38.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(24.dp)
             )
+            Spacer(modifier = Modifier.size(8.dp))
             Text(
-                text = stringResource(id = text).uppercase(),
-                style = TextStyle(
-                    fontSize = 13.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Medium
-                ),
-                modifier = Modifier.padding(start = 8.dp)
+                text = stringResource(id = title),
+                color = Color.Black
             )
         }
     }

@@ -14,10 +14,11 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.com")
+            .baseUrl("https://67f627a5913986b16fa6f628.mockapi.io")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
     @Provides
     fun provideFoodApi(retrofit: Retrofit): FoodApi {
         return retrofit.create(FoodApi::class.java)

@@ -37,13 +37,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.food_hub.R
 import com.example.food_hub.ui.AuthDivider
 import com.example.food_hub.ui.SocialButton
+import com.example.food_hub.ui.navigation.Login
+import com.example.food_hub.ui.navigation.SignUp
 import com.example.food_hub.ui.theme.Colors
 
 @Composable
-fun AuthScreen() {
+fun AuthScreen(navController: NavController) {
     val imageSize = remember {
         mutableStateOf(IntSize.Zero)
     }
@@ -122,18 +126,20 @@ fun AuthScreen() {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 SocialButton(
-                    text = R.string.facebook,
+                    title = R.string.facebook,
                     icon = R.drawable.ic_facebook,
                     onClick = {}
                 )
                 SocialButton(
-                    text = R.string.google,
+                    title = R.string.google,
                     icon = R.drawable.ic_google,
                     onClick = {}
                 )
             }
             OutlinedButton(
-                onClick = {},
+                onClick = {
+                    navController.navigate(SignUp)
+                },
                 modifier = Modifier
                     .padding(bottom = 24.dp)
                     .height(54.dp)
@@ -155,7 +161,9 @@ fun AuthScreen() {
                 )
                 Text(
                     modifier = Modifier
-                        .clickable { }
+                        .clickable {
+                            navController.navigate(Login)
+                        }
                         .padding(start = 5.dp),
                     text = stringResource(id = R.string.sign_in),
                     textDecoration = TextDecoration.Underline,
@@ -171,5 +179,5 @@ fun AuthScreen() {
 @Preview(showBackground = true)
 @Composable
 fun AuthScreenPreview() {
-    AuthScreen()
+    AuthScreen(rememberNavController())
 }
