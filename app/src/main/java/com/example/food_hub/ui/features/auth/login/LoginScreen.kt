@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -206,7 +207,12 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                     fontWeight = FontWeight.Medium
                 )
             }
-            GroupSocialButtons(color = Colors.Quote)
+            val context = LocalContext.current
+            GroupSocialButtons(
+                color = Colors.Quote,
+                onFacebookClick = {},
+                onGoogleClick = { viewModel.onGoogleSignInClicked(context) }
+            )
         }
     }
 }

@@ -223,7 +223,7 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
                     fontWeight = FontWeight.Medium
                 )
             }
-            GroupSocialButtons(color = Colors.Quote)
+            GroupSocialButtons(color = Colors.Quote, onFacebookClick = {}, onGoogleClick = {})
         }
     }
 }

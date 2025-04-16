@@ -1,8 +1,11 @@
 package com.example.food_hub.ui.features.auth.login
 
+import android.content.Context
+import androidx.credentials.CredentialManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.food_hub.data.FoodApi
+import com.example.food_hub.data.auth.GoogleAuthUIProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +16,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(private val foodApi: FoodApi) : ViewModel() {
+
+    val googleAuthUIProvider = GoogleAuthUIProvider()
+
     private val _uiState = MutableStateFlow<LoginEvent>(LoginEvent.Nothing)
     val uiState = _uiState.asStateFlow()
 
@@ -42,6 +48,19 @@ class LoginViewModel @Inject constructor(private val foodApi: FoodApi) : ViewMod
     fun onSignUpClicked() {
         viewModelScope.launch {
             _navigationEvent.emit(LoginNavigationEvent.NavigateToSignUp)
+        }
+    }
+
+    fun onGoogleSignInClicked(context: Context) {
+        viewModelScope.launch {
+            _uiState.value = LoginEvent.Loading
+            val response = googleAuthUIProvider.signIn(context, CredentialManager.create(context))
+            if (response != null) {
+                _uiState.value = LoginEvent.Success
+                _navigationEvent.emit(LoginNavigationEvent.NavigateToHome)
+            } else {
+                _uiState.value = LoginEvent.Error
+            }
         }
     }
 

@@ -44,6 +44,8 @@ import com.example.food_hub.ui.theme.Colors
 @Composable
 fun GroupSocialButtons(
     color: Color = Color.White,
+    onFacebookClick: () -> Unit,
+    onGoogleClick:() -> Unit
 ) {
     Column {
         Row(
@@ -79,12 +81,12 @@ fun GroupSocialButtons(
             SocialButton(
                 icon = R.drawable.ic_facebook,
                 title = R.string.facebook,
-                onClick = {   }
+                onClick = onFacebookClick
             )
             SocialButton(
                 icon = R.drawable.ic_google,
                 title = R.string.google,
-                onClick = {   }
+                onClick = onGoogleClick
             )
         }
 
